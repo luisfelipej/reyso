@@ -1,24 +1,195 @@
 ---
-import HeaderButton from './HeaderButton.astro';
+import Logo from './Logo.astro';
+import Icon from './Icon.astro';
+import { nav, waLink, contact, telLink } from '../data/site';
 
-console.log('javascript');
+const path = Astro.url.pathname.replace(/\/+$/, '') || '/';
+const isActive = (href: string) => (href === '/' ? path === '/' : path.startsWith(href));
 ---
 
 <header
-  class="py-4 px-6 mx-auto max-w-7xl flex flex-col items-center lg:flex-row lg:justify-between"
+  id="site-header"
+  class="sticky top-0 z-50 border-b border-white/5 bg-ink-950/80 backdrop-blur-md transition-shadow duration-300 data-[scrolled]:shadow-lg data-[scrolled]:shadow-black/40"
 >
-  <div class="text-center lg:text-left">
+  <div class="container-page flex h-16 items-center justify-between gap-4 lg:h-20">
     <a
       href="/"
-      class="text-5xl font-extrabold text-white hover:text-gray-300 transition duration-200"
+      class="shrink-0 rounded-md transition-opacity hover:opacity-80"
+      aria-label="Reyso, ir al inicio"
     >
-      Reyso
+      <Logo class="text-2xl lg:text-3xl" />
     </a>
-  </div>
 
-  <nav class="flex gap-6 mt-4 lg:mt-0">
-    <HeaderButton class="text-white" href="/easycarp">Easycarp</HeaderButton>
-    <HeaderButton class="text-white" href="/torneria">Tornería</HeaderButton>
-    <HeaderButton class="text-white" href="/repara">Reparaciones y Soldaduras</HeaderButton>
-  </nav>
+    <!-- Navegación de escritorio -->
+    <nav class="hidden items-center gap-1 lg:flex" aria-label="Principal">
+      {
+        nav.map((item) => (
+          <a
+            href={item.href}
+            aria-current={isActive(item.href) ? 'page' : undefined}
+            class:list={[
+              'relative rounded-lg px-3.5 py-2 text-sm font-semibold tracking-wide uppercase transition-colors duration-200',
+              isActive(item.href)
+                ? 'text-brand-400'
+                : 'text-ink-300 hover:bg-white/5 hover:text-white',
+            ]}
+          >
+            {item.label}
+            {isActive(item.href) && (
+              <span class="absolute inset-x-3.5 -bottom-px h-0.5 rounded-full bg-brand-400" />
+            )}
+          </a>
+        ))
+      }
+    </nav>
+
+    <div class="flex items-center gap-2">
+      <a
+        href={telLink}
+        class="hidden items-center gap-2 rounded-lg px-3 py-2 text-sm font-semibold text-ink-200 transition-colors hover:text-white xl:flex"
+      >
+        <Icon name="phone" class="size-4 text-brand-400" />
+        {contact.phonePretty}
+      </a>
+
+      <a
+        href={waLink('Hola Reyso, quiero cotizar un trabajo.')}
+        target="_blank"
+        rel="noopener"
+        class="hidden items-center gap-2 rounded-lg bg-brand-500 px-4 py-2.5 text-sm font-bold text-white transition-all duration-200 hover:bg-brand-600 hover:shadow-lg hover:shadow-brand-500/25 sm:flex"
+      >
+        <Icon name="whatsapp" class="size-4" />
+        Cotizar
+      </a>
+
+      <!-- Botón de menú móvil -->
+      <button
+        type="button"
+        id="menu-toggle"
+        aria-controls="menu-movil"
+        aria-expanded="false"
+        class="relative z-50 flex size-11 items-center justify-center rounded-lg border border-white/10 text-white transition-colors hover:bg-white/5 lg:hidden"
+      >
+        <span class="sr-only">Abrir menú</span>
+        <span class="flex w-5 flex-col items-end gap-[5px]" aria-hidden="true">
+          <span
+            data-bar="1"
+            class="h-0.5 w-full origin-center rounded-full bg-current transition-transform duration-300"
+          ></span>
+          <span
+            data-bar="2"
+            class="h-0.5 w-3.5 rounded-full bg-current transition-all duration-300"
+          ></span>
+          <span
+            data-bar="3"
+            class="h-0.5 w-full origin-center rounded-full bg-current transition-transform duration-300"
+          ></span>
+        </span>
+      </button>
+    </div>
+  </div>
 </header>
+
+<!-- Panel de menú móvil -->
+<div
+  id="menu-movil"
+  hidden
+  class="fixed inset-0 z-40 bg-ink-950/95 backdrop-blur-lg lg:hidden"
+  data-menu-panel
+>
+  <nav class="container-page flex h-full flex-col pt-24 pb-10" aria-label="Menú móvil">
+    <ul class="flex flex-col gap-1">
+      {
+        nav.map((item, i) => (
+          <li>
+            <a
+              href={item.href}
+              aria-current={isActive(item.href) ? 'page' : undefined}
+              style={`--reveal-delay:${i * 45}ms`}
+              class:list={[
+                'flex items-center justify-between border-b border-white/5 py-4 font-display text-3xl font-bold uppercase transition-colors',
+                isActive(item.href) ? 'text-brand-400' : 'text-white hover:text-brand-400',
+              ]}
+            >
+              {item.label}
+              <Icon name="arrow-right" class="size-6 text-ink-500" />
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+
+    <div class="mt-auto flex flex-col gap-3 pt-8">
+      <a
+        href={waLink('Hola Reyso, quiero cotizar un trabajo.')}
+        target="_blank"
+        rel="noopener"
+        class="flex items-center justify-center gap-2 rounded-xl bg-brand-500 px-5 py-4 font-bold text-white"
+      >
+        <Icon name="whatsapp" class="size-5" />
+        Cotizar por WhatsApp
+      </a>
+      <a
+        href={telLink}
+        class="flex items-center justify-center gap-2 rounded-xl border border-white/10 px-5 py-4 font-semibold text-white"
+      >
+        <Icon name="phone" class="size-5 text-brand-400" />
+        {contact.phonePretty}
+      </a>
+    </div>
+  </nav>
+</div>
+
+<script>
+  const header = document.getElementById('site-header');
+  const toggle = document.getElementById('menu-toggle');
+  const panel = document.getElementById('menu-movil');
+
+  /* Sombra del header al hacer scroll */
+  if (header) {
+    const onScroll = () => {
+      if (window.scrollY > 8) header.setAttribute('data-scrolled', '');
+      else header.removeAttribute('data-scrolled');
+    };
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+  }
+
+  /* Menú móvil */
+  if (toggle && panel) {
+    const bar1 = toggle.querySelector<HTMLElement>('[data-bar="1"]');
+    const bar2 = toggle.querySelector<HTMLElement>('[data-bar="2"]');
+    const bar3 = toggle.querySelector<HTMLElement>('[data-bar="3"]');
+    const label = toggle.querySelector<HTMLElement>('.sr-only');
+
+    const setOpen = (open: boolean) => {
+      toggle.setAttribute('aria-expanded', String(open));
+      panel.hidden = !open;
+      document.body.style.overflow = open ? 'hidden' : '';
+      if (label) label.textContent = open ? 'Cerrar menú' : 'Abrir menú';
+      if (bar1) bar1.style.transform = open ? 'translateY(7px) rotate(45deg)' : '';
+      if (bar2) bar2.style.opacity = open ? '0' : '1';
+      if (bar3) bar3.style.transform = open ? 'translateY(-7px) rotate(-45deg)' : '';
+    };
+
+    toggle.addEventListener('click', () => {
+      setOpen(toggle.getAttribute('aria-expanded') !== 'true');
+    });
+
+    panel.addEventListener('click', (event) => {
+      if ((event.target as HTMLElement).closest('a')) setOpen(false);
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && toggle.getAttribute('aria-expanded') === 'true') {
+        setOpen(false);
+        toggle.focus();
+      }
+    });
+
+    /* Si se agranda la ventana con el menú abierto, se cierra */
+    window.matchMedia('(min-width: 1024px)').addEventListener('change', (event) => {
+      if (event.matches) setOpen(false);
+    });
+  }
+</script>

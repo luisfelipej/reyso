@@ -1,96 +1,226 @@
 ---
+import { Image } from 'astro:assets';
 import Layout from '../layouts/Layout.astro';
-import Galeria from '../components/Galeria.astro';
+import PageHero from '../components/PageHero.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import Gallery from '../components/Gallery.astro';
+import ContactCTA from '../components/ContactCTA.astro';
+import Faq from '../components/Faq.astro';
+import Icon from '../components/Icon.astro';
+import Button from '../components/Button.astro';
+import { easycarpGallery } from '../data/galleries';
+import { waLink } from '../data/site';
+
+import logo from '../assets/img/logoeasycarp2.png';
+import detalle from '../assets/img/detalleseasy.jpg';
+
+const compatibilidad = [
+  {
+    title: 'Tolva bidireccional',
+    text: 'El brazo recorre la tolva en ambos sentidos, sin tener que dar vuelta el equipo.',
+  },
+  {
+    title: 'Doble puente',
+    text: 'Montaje reforzado para tolvas de doble puente, con los apoyos repartidos.',
+  },
+  {
+    title: 'Batea',
+    text: 'Versión con resorte tipo espiral montado sobre rodamientos, pensada para batea.',
+  },
+];
+
+const componentes = [
+  {
+    icon: 'settings' as const,
+    title: 'Resortes americanos',
+    text: 'Son los que mantienen la tensión de la carpa durante todo el recorrido.',
+  },
+  {
+    icon: 'tool' as const,
+    title: 'Manivela lateral',
+    text: 'Se acciona desde el costado del camión, sin subirse arriba de la carga.',
+  },
+  {
+    icon: 'truck' as const,
+    title: 'Brazo de recorrido',
+    text: 'Cubre la tolva de extremo a extremo y queda plegado cuando no se usa.',
+  },
+  {
+    icon: 'circle-check' as const,
+    title: 'Instalación incluida',
+    text: 'Montamos el sistema sobre tu equipo y lo dejamos funcionando.',
+  },
+];
+
+const faq = [
+  {
+    q: '¿Sirve para mi camión?',
+    a: 'El sistema se monta sobre tolvas bidireccionales, tolvas de doble puente y bateas. Si nos mandas una foto de tu equipo por WhatsApp te confirmamos la compatibilidad y el tipo de montaje.',
+  },
+  {
+    q: '¿Ustedes lo instalan?',
+    a: 'Sí. La instalación va incluida: fabricamos los soportes, montamos el brazo y dejamos el equipo probado antes de entregarlo.',
+  },
+  {
+    q: '¿Cuánto cuesta y cuánto demora?',
+    a: 'Depende del tipo de equipo y del montaje que requiera, así que lo definimos al cotizar. Escríbenos con una foto y te pasamos precio y plazo.',
+  },
+  {
+    q: '¿Es manual o automático?',
+    a: 'Easycarp es un sistema de encarpe manual. Se acciona con la manivela desde el costado, sin motor ni instalación eléctrica.',
+  },
+  {
+    q: '¿Hacen mantención o repuestos?',
+    a: 'Sí. Reponemos resortes, pasadores y piezas del mecanismo, y también las fabricamos en el torno si la pieza original ya no se consigue.',
+  },
+];
 ---
 
-<Layout title="Easycarp">
-  <section class="py-10 px-6 text-center">
-    <div>
-      <img src="/public/images/logoeasycarp2.png" alt="" />
-    </div>
-    <p class="text-white text-xl max-w-2xl mx-auto mt-6 text-center leading-relaxed">
-      En esta sección, podrás conocer en detalle todos los implementos que conforman el equipo de
-      encarpe.
-    </p>
+<Layout
+  title="Easycarp — Encarpe manual para tolvas y bateas"
+  description="Easycarp es el sistema de encarpe manual de Reyso para camiones tolva bidireccionales, doble puente y bateas. Fabricación, instalación y repuestos."
+>
+  <PageHero eyebrow="Encarpe manual" title="Easycarp" crumb="Easycarp">
+    El sistema de encarpe manual que fabricamos e instalamos sobre tu tolva o batea. Sin motor, sin
+    instalación eléctrica, accionado desde el costado.
+  </PageHero>
 
-    <Galeria />
-  </section>
+  <!-- ==================== QUÉ ES ==================== -->
+  <section class="py-20 lg:py-24">
+    <div class="container-page">
+      <div class="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
+        <div data-reveal class="order-2 lg:order-1">
+          <div class="max-w-md">
+            <Image
+              src={logo}
+              alt="Logotipo de Easycarp"
+              widths={[320, 520]}
+              sizes="(min-width: 1024px) 26rem, 80vw"
+              class="h-auto w-full max-w-xs rounded-xl"
+            />
+          </div>
 
-  <section class="py-10 px-6 text-center">
-    <h2 class="text-4xl font-bold text-white">Cotiza tu Easycarp</h2>
-    <p class="text-gray-400 max-w-2xl mx-auto mt-4">
-      Si deseas instalar tu Easycarp, ¡Contactanos!
-    </p>
-    <div class="flex flex-row justify-center items-center gap-4 mt-6">
-      <a
-        href="https://wa.me/56999097058"
-        target="_blank"
-        class="p-2 bg-green-500 rounded-full text-white hover:bg-green-600"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="32"
-          height="32"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          class="icon icon-tabler icon-tabler-brand-whatsapp"
-        >
-          <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-          <path d="M3 21l1.65 -3.8a9 9 0 1 1 3.4 2.9l-5.05 .9"></path>
-          <path
-            d="M9 10a.5 .5 0 0 0 1 0v-1a.5 .5 0 0 0 -1 0v1a5 5 0 0 0 5 5h1a.5 .5 0 0 0 0 -1h-1a.5 .5 0 0 0 0 1"
-          ></path>
-        </svg>
-      </a>
+          <p class="mt-8 text-lg leading-relaxed text-ink-300">
+            Easycarp cubre la carga de punta a punta con un brazo que recorre la tolva y vuelve a su
+            posición plegado. Está pensado para el uso diario en ruta: piezas simples, reemplazables
+            y fabricadas en nuestro propio taller.
+          </p>
 
-      <a
-        href="mailto:reyso.lajc@gmail.com"
-        class="p-2 bg-blue-500 rounded-full text-white hover:bg-blue-600"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="32"
-          height="32"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          class="icon icon-tabler icon-tabler-mail"
-        >
-          <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-          <path d="M3 7a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v10a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-10z"
-          ></path>
-          <path d="M3 7l9 6l9 -6"></path>
-        </svg>
-      </a>
+          <div class="mt-8">
+            <Button
+              href={waLink('Hola Reyso, quiero cotizar un Easycarp para mi camión.')}
+              icon="whatsapp"
+              external
+            >
+              Cotizar mi Easycarp
+            </Button>
+          </div>
+        </div>
 
-      <a href="tel:+56999097058" class="p-2 bg-red-500 rounded-full text-white hover:bg-red-600">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="32"
-          height="32"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          class="icon icon-tabler icon-tabler-phone-call"
-        >
-          <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-          <path
-            d="M5 4h4l2 5l-2.5 1.5a11 11 0 0 0 5 5l1.5 -2.5l5 2v4a2 2 0 0 1 -2 2a16 16 0 0 1 -15 -15a2 2 0 0 1 2 -2"
-          ></path>
-          <path d="M15 7a2 2 0 0 1 2 2"></path>
-          <path d="M15 3a6 6 0 0 1 6 6"></path>
-        </svg>
-      </a>
+        <div data-reveal style="--reveal-delay:90ms" class="order-1 lg:order-2">
+          <div
+            class="overflow-hidden rounded-3xl border border-white/10 shadow-2xl shadow-black/50"
+          >
+            <Image
+              src={detalle}
+              alt="Vista superior del brazo Easycarp montado sobre la tolva de un camión"
+              widths={[500, 800, 1100]}
+              sizes="(min-width: 1024px) 45vw, 100vw"
+              class="aspect-[4/5] w-full object-cover"
+            />
+          </div>
+        </div>
+      </div>
     </div>
   </section>
+
+  <!-- ==================== COMPONENTES ==================== -->
+  <section class="relative overflow-hidden border-y border-white/8 bg-ink-900 py-20 lg:py-24">
+    <div class="grid-texture absolute inset-0 opacity-50" aria-hidden="true"></div>
+
+    <div class="container-page relative">
+      <SectionHeading eyebrow="El equipo por dentro" title="De qué está hecho" align="center" />
+
+      <div class="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        {
+          componentes.map((item, i) => (
+            <div
+              data-reveal
+              style={`--reveal-delay:${i * 80}ms`}
+              class="flex flex-col gap-4 rounded-2xl border border-white/8 bg-ink-950/50 p-6 transition-colors duration-300 hover:border-brand-400/30"
+            >
+              <span class="flex size-12 items-center justify-center rounded-xl bg-brand-400/12 text-brand-400">
+                <Icon name={item.icon} class="size-6" />
+              </span>
+              <h3 class="text-xl uppercase">{item.title}</h3>
+              <p class="text-sm leading-relaxed text-ink-400">{item.text}</p>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== GALERÍA ==================== -->
+  <section class="py-20 lg:py-24">
+    <div class="container-page">
+      <SectionHeading eyebrow="Galería" title="Equipos instalados">
+        Fotos de trabajos reales. Haz clic en cualquiera para verla en grande.
+      </SectionHeading>
+
+      <Gallery items={easycarpGallery} class="mt-12" />
+    </div>
+  </section>
+
+  <!-- ==================== COMPATIBILIDAD ==================== -->
+  <section class="border-t border-white/8 py-20 lg:py-24">
+    <div class="container-page">
+      <div class="grid gap-12 lg:grid-cols-12 lg:gap-16">
+        <div class="lg:col-span-5">
+          <SectionHeading eyebrow="Compatibilidad" title="Sobre qué equipos se monta">
+            Si tu camión no aparece en la lista, consúltanos igual: casi siempre hay un montaje
+            posible.
+          </SectionHeading>
+        </div>
+
+        <div class="flex flex-col gap-4 lg:col-span-7">
+          {
+            compatibilidad.map((item, i) => (
+              <div
+                data-reveal
+                style={`--reveal-delay:${i * 80}ms`}
+                class="flex items-start gap-4 rounded-2xl border border-white/8 bg-ink-900/60 p-6"
+              >
+                <Icon name="circle-check" class="mt-0.5 size-6 shrink-0 text-brand-400" />
+                <div>
+                  <h3 class="text-xl uppercase">{item.title}</h3>
+                  <p class="mt-2 text-sm leading-relaxed text-ink-400">{item.text}</p>
+                </div>
+              </div>
+            ))
+          }
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== PREGUNTAS ==================== -->
+  <section class="border-t border-white/8 bg-ink-900/40 py-20 lg:py-24">
+    <div class="container-page">
+      <div class="mx-auto max-w-3xl">
+        <SectionHeading
+          eyebrow="Preguntas frecuentes"
+          title="Lo que más nos preguntan"
+          align="center"
+        />
+        <Faq items={faq} class="mt-12" />
+      </div>
+    </div>
+  </section>
+
+  <ContactCTA
+    title="Cotiza tu Easycarp"
+    text="Mándanos una foto de tu tolva o batea y te decimos qué montaje corresponde, con precio y plazo."
+    waMessage="Hola Reyso, quiero cotizar un Easycarp para mi camión."
+  />
 </Layout>

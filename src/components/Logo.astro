@@ -1,0 +1,37 @@
+---
+/**
+ * Marca denominativa de Reyso.
+ *
+ * Reproduce el lenguaje del logo Easycarp: itálica condensada pesada, en
+ * blanco, con las líneas de velocidad a la izquierda.
+ * El tamaño se controla con utilidades de texto (`text-2xl`, `text-3xl`, …).
+ */
+interface Props {
+  class?: string;
+  /** Oculta las líneas de velocidad en espacios muy estrechos. */
+  lines?: boolean;
+}
+
+const { class: className = 'text-2xl', lines = true } = Astro.props;
+---
+
+<span class:list={['inline-flex items-baseline gap-1.5 leading-none select-none', className]}>
+  {
+    lines && (
+      <svg
+        viewBox="0 0 34 24"
+        class="h-[0.62em] w-auto shrink-0 self-center text-white/70"
+        aria-hidden="true"
+        fill="currentColor"
+      >
+        <path d="M6 1h28l-3 3H3z" />
+        <path d="M3 6.6h31l-3 3H0z" opacity="0.85" />
+        <path d="M7 12.2h27l-3 3H4z" opacity="0.6" />
+        <path d="M12 17.8h22l-3 3H9z" opacity="0.35" />
+      </svg>
+    )
+  }
+  <span class="font-display font-extrabold tracking-tight text-white italic uppercase">
+    Reyso
+  </span>
+</span>

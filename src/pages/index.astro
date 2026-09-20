@@ -1,155 +1,312 @@
 ---
+import { Image } from 'astro:assets';
 import Layout from '../layouts/Layout.astro';
+import Button from '../components/Button.astro';
+import Icon from '../components/Icon.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import ServiceCard from '../components/ServiceCard.astro';
+import ContactCTA from '../components/ContactCTA.astro';
+import { services, waLink } from '../data/site';
+
+import heroImg from '../assets/img/easycarp.png';
+import easycarpImg from '../assets/img/vistaeasycarp.jpg';
+import torneriaImg from '../assets/img/torneria.png';
+
+/* Cada servicio con su foto de portada. */
+const serviceCards = [
+  {
+    service: services[0],
+    image: easycarpImg,
+    alt: 'Brazo del encarpe Easycarp extendido sobre una tolva',
+  },
+  {
+    service: services[1],
+    image: torneriaImg,
+    alt: 'Pieza montada en el plato de tres mordazas de un torno',
+  },
+];
+
+const marquee = [
+  'Tolvas bidireccionales',
+  'Doble puente',
+  'Bateas',
+  'Resortes americanos',
+  'Pasadores y bujes',
+  'Ejes a medida',
+  'Piezas desde muestra',
+  'Repuestos Easycarp',
+];
+
+const razones = [
+  {
+    icon: 'truck' as const,
+    title: 'Pensado para el camión',
+    text: 'Trabajamos sobre tolvas y bateas reales, no sobre catálogos. El equipo se adapta al que ya tienes.',
+  },
+  {
+    icon: 'settings' as const,
+    title: 'Piezas a medida',
+    text: 'Si la pieza original no se consigue, la fabricamos en el torno a partir de la muestra.',
+  },
+  {
+    icon: 'bolt' as const,
+    title: 'Respuesta rápida',
+    text: 'Cotizamos por WhatsApp con una foto. Sin formularios eternos ni esperas de días.',
+  },
+  {
+    icon: 'circle-check' as const,
+    title: 'Materiales que aguantan',
+    text: 'Resortes americanos y acero de calidad. El equipo tiene que durar la temporada completa.',
+  },
+];
+
+const pasos = [
+  {
+    n: '01',
+    title: 'Nos cuentas',
+    text: 'Mándanos una foto del equipo o la pieza por WhatsApp y explícanos qué necesitas.',
+  },
+  {
+    n: '02',
+    title: 'Cotizamos',
+    text: 'Revisamos medidas y materiales, y te pasamos precio y plazo sin compromiso.',
+  },
+  {
+    n: '03',
+    title: 'Fabricamos e instalamos',
+    text: 'Trabajamos en nuestro taller de Peñalolén: nos traes el equipo y te lo entregamos listo.',
+  },
+];
 ---
 
 <Layout title="Reyso">
-  <section class="py-10 px-6 text-center bg-zinc-700/60 rounded-xl shadow-lg">
-    <h2 class="text-3xl font-extrabold text-white">Bienvenidos a Reyso</h2>
-    <p class="mt-4 text-lg sm:text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed">
-      En <span class="font-bold text-yellow-500">Reyso</span> ofrecemos soluciones especializadas en
-      <span class="text-yellow-400">Easycarp</span>, tornería, reparaciones y soldaduras. Nuestro
-      compromiso es brindar calidad, precisión y eficiencia en cada trabajo.
-    </p>
-  </section>
-
-  <div class="grid grid-cols-1 md:grid-cols-3 gap-4 lg:py-10 lg:px-6">
-    <div class="flex flex-col gap-2 rounded-md p-3 ring-0 cursor-pointer bg-zinc-700/60">
-      <a href="/easycarp" target="_self">
-        <img
-          src="/images/easycarp.png"
-          alt="Easycarp"
-          width="400"
-          height="220"
-          loading="lazy"
-          decoding="async"
-          class="w-full aspect-video rounded-md self-auto object-cover"
-        />
-      </a>
-      <h2 class="text-lg font-title font-bold text-white">Easycarp</h2>
-      <p class="text-xs text-gray-300">
-        Ofrecemos un encarpe manual para camiones tolvas bidireccionales, doble puente y bateas.
-      </p>
+  <!-- ==================== HERO ==================== -->
+  <section class="relative overflow-hidden">
+    <div class="grid-texture absolute inset-0 opacity-70" aria-hidden="true"></div>
+    <div
+      class="absolute top-0 -right-40 h-[32rem] w-[32rem] rounded-full bg-brand-400/10 blur-3xl"
+      aria-hidden="true"
+    >
     </div>
 
-    <div class="flex flex-col gap-2 rounded-md p-3 ring-0 cursor-pointer bg-zinc-700/60">
-      <a href="/torneria" target="_self">
-        <img
-          src="/images/torneria.png"
-          alt="Tornería"
-          width="400"
-          height="220"
-          loading="lazy"
-          decoding="async"
-          class="w-full aspect-video rounded-md self-auto object-cover"
-        />
-      </a>
-      <h2 class="text-lg font-title font-bold text-white">Tornería</h2>
-      <p class="text-xs text-gray-300">
-        En nuestro servicio de tornería ofrecemos soluciones de precisión.
-      </p>
+    <div class="container-page relative py-16 lg:py-24">
+      <div class="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
+        <!-- Texto -->
+        <div class="flex flex-col items-start gap-7">
+          <span
+            data-reveal
+            class="inline-flex items-center gap-2.5 rounded-full border border-brand-400/30 bg-brand-400/10 px-4 py-1.5 text-xs font-bold tracking-[0.16em] text-brand-400 uppercase"
+          >
+            <span class="flex size-1.5 rounded-full bg-brand-400"></span>
+            Taller mecánico e industrial
+          </span>
+
+          <h1
+            data-reveal
+            style="--reveal-delay:70ms"
+            class="text-5xl uppercase sm:text-6xl lg:text-7xl"
+          >
+            Encarpe y
+            <span class="text-brand-400 italic">tornería</span>
+            para camiones
+          </h1>
+
+          <p
+            data-reveal
+            style="--reveal-delay:140ms"
+            class="max-w-xl text-lg leading-relaxed text-ink-300"
+          >
+            En <strong class="font-semibold text-white">Reyso</strong> fabricamos e instalamos el sistema
+            de encarpe manual <strong class="font-semibold text-brand-400">Easycarp</strong> para tolvas
+            y bateas, y fabricamos en torno las piezas que tu equipo necesita.
+          </p>
+
+          <div data-reveal style="--reveal-delay:210ms" class="flex flex-col gap-3 sm:flex-row">
+            <Button
+              href={waLink('Hola Reyso, quiero cotizar un trabajo.')}
+              size="lg"
+              icon="whatsapp"
+              external
+            >
+              Cotizar ahora
+            </Button>
+            <Button href="#servicios" variant="secondary" size="lg" icon="arrow-right" iconRight>
+              Ver servicios
+            </Button>
+          </div>
+
+          <ul
+            data-reveal
+            style="--reveal-delay:280ms"
+            class="flex flex-wrap gap-x-6 gap-y-2 pt-2 text-sm text-ink-400"
+          >
+            {
+              [
+                'Cotización sin costo',
+                'Instalación incluida',
+                'Trabajos a medida',
+                'Taller en Peñalolén',
+              ].map((item) => (
+                <li class="flex items-center gap-2">
+                  <Icon name="check" class="size-4 text-brand-400" stroke={2.5} />
+                  {item}
+                </li>
+              ))
+            }
+          </ul>
+        </div>
+
+        <!-- Imagen -->
+        <div data-reveal style="--reveal-delay:120ms" class="relative">
+          <div
+            class="relative overflow-hidden rounded-3xl border border-white/10 shadow-2xl shadow-black/60"
+          >
+            <Image
+              src={heroImg}
+              alt="Camión tolva con el sistema de encarpe Easycarp instalado"
+              widths={[600, 900, 1200]}
+              sizes="(min-width: 1024px) 50vw, 100vw"
+              loading="eager"
+              class="aspect-[4/5] w-full object-cover"
+            />
+            <div
+              class="absolute inset-0 bg-gradient-to-t from-ink-950/70 via-transparent to-transparent"
+            >
+            </div>
+          </div>
+
+          <!-- Tarjeta flotante -->
+          <div
+            class="absolute -bottom-5 -left-3 flex items-center gap-3 rounded-2xl border border-white/10 bg-ink-900/95 px-5 py-4 shadow-xl backdrop-blur-sm sm:-left-6"
+          >
+            <span
+              class="flex size-11 items-center justify-center rounded-xl bg-brand-500 text-white"
+            >
+              <Icon name="truck" class="size-6" />
+            </span>
+            <span class="leading-tight">
+              <span class="block font-display text-lg tracking-wide text-white uppercase">
+                Easycarp
+              </span>
+              <span class="block text-xs text-ink-400">Encarpe manual instalado</span>
+            </span>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <div class="flex flex-col gap-2 rounded-md p-3 ring-0 cursor-pointer bg-zinc-700/60">
-      <a href="/repara" target="_self">
-        <img
-          src="/images/repara.png"
-          alt="Reparaciones y Soldaduras"
-          width="400"
-          height="220"
-          loading="lazy"
-          decoding="async"
-          class="w-full aspect-video rounded-md self-auto object-cover"
-        />
-      </a>
-      <h2 class="text-lg font-title font-bold text-white">Reparaciones y Soldaduras</h2>
-      <p class="text-xs text-gray-300">
-        Realizamos reparaciones y soldaduras con materiales de alta calidad.
-      </p>
-    </div>
-  </div>
-
-  <section class="py-10 px-6 text-center">
-    <h2 class="text-4xl font-bold text-white">¿Listo para trabajar con nosotros?</h2>
-    <p class="text-gray-400 max-w-2xl mx-auto mt-4">
-      Para contactarnos y cotizar sobre nuestros servicios te dejamos los siguientes canales:
-    </p>
-    <div class="flex flex-col sm:flex-row justify-center gap-4 mt-6">
-      <a
-        href="https://wa.me/56999097058"
-        target="_blank"
-        class="flex items-center gap-2 bg-yellow-600 text-white px-6 py-3 rounded-lg hover:bg-green-600 transition"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="24"
-          height="24"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          class="icon icon-tabler icons-tabler-outline icon-tabler-brand-whatsapp"
-          ><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path
-            d="M3 21l1.65 -3.8a9 9 0 1 1 3.4 2.9l-5.05 .9"></path><path
-            d="M9 10a.5 .5 0 0 0 1 0v-1a.5 .5 0 0 0 -1 0v1a5 5 0 0 0 5 5h1a.5 .5 0 0 0 0 -1h-1a.5 .5 0 0 0 0 1"
-          ></path></svg
+    <!-- Cinta de especialidades -->
+    <div class="relative border-y border-white/8 bg-ink-900/60 py-4">
+      <div class="flex overflow-hidden" aria-hidden="true">
+        <ul
+          class="flex shrink-0 animate-marquee items-center gap-10 pr-10 motion-reduce:animate-none"
         >
-        +56 9 9909 7058
-      </a>
-
-      <a
-        href="mailto:reyso.lajc@gmail.com"
-        class="flex items-center gap-2 bg-yellow-600 text-white px-6 py-3 rounded-lg hover:bg-blue-600 transition"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="24"
-          height="24"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          class="icon icon-tabler icons-tabler-outline icon-tabler-mail"
-          ><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path
-            d="M3 7a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v10a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-10z"
-          ></path><path d="M3 7l9 6l9 -6"></path></svg
-        >
-        Reyso.lajc@gmail.com
-      </a>
-
-      <a
-        href="tel:+56999097058"
-        class="flex items-center gap-2 bg-yellow-600 text-white px-6 py-3 rounded-lg hover:bg-gray-800 transition"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="24"
-          height="24"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          class="icon icon-tabler icons-tabler-outline icon-tabler-phone-call"
-          ><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path
-            d="M5 4h4l2 5l-2.5 1.5a11 11 0 0 0 5 5l1.5 -2.5l5 2v4a2 2 0 0 1 -2 2a16 16 0 0 1 -15 -15a2 2 0 0 1 2 -2"
-          ></path><path d="M15 7a2 2 0 0 1 2 2"></path><path d="M15 3a6 6 0 0 1 6 6"></path></svg
-        >
-        +56 9 9909 7058
-      </a>
+          {
+            [...marquee, ...marquee].map((item) => (
+              <li class="flex shrink-0 items-center gap-10 font-display text-sm tracking-[0.2em] whitespace-nowrap text-ink-400 uppercase">
+                {item}
+                <span class="size-1.5 rotate-45 bg-brand-400" />
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+      <p class="sr-only">Especialidades: {marquee.join(', ')}.</p>
     </div>
   </section>
 
-  <section class="py-10 px-6 text-center">
-    <h2 class="text-4xl font-bold text-white">Sobre Nosotros</h2>
-    <p class="text-gray-400 max-w-3xl mx-auto mt-4">
-      En Reyso nos especializamos en brindar soluciones de calidad. Contamos con un equipo altamente
-      capacitado y años de experiencia en el rubro, garantizando un servicio eficiente y profesional
-      para nuestros clientes.
-    </p>
+  <!-- ==================== SERVICIOS ==================== -->
+  <section id="servicios" class="scroll-mt-24 py-20 lg:py-28">
+    <div class="container-page">
+      <SectionHeading eyebrow="Lo que hacemos" title="Dos servicios, un solo taller">
+        Desde el encarpe completo del camión hasta la pieza que no se consigue en ninguna parte.
+      </SectionHeading>
+
+      <div class="mx-auto mt-12 grid max-w-4xl gap-6 md:grid-cols-2">
+        {
+          serviceCards.map((card, i) => (
+            <ServiceCard service={card.service} image={card.image} alt={card.alt} index={i} />
+          ))
+        }
+      </div>
+    </div>
   </section>
+
+  <!-- ==================== POR QUÉ REYSO ==================== -->
+  <section class="relative overflow-hidden border-y border-white/8 bg-ink-900 py-20 lg:py-28">
+    <div class="grid-texture absolute inset-0 opacity-50" aria-hidden="true"></div>
+
+    <div class="container-page relative">
+      <SectionHeading
+        eyebrow="Por qué Reyso"
+        title="Trabajo de taller, no de catálogo"
+        align="center"
+      >
+        Somos un equipo chico y eso se nota: hablas directo con quien va a hacer el trabajo.
+      </SectionHeading>
+
+      <div class="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        {
+          razones.map((razon, i) => (
+            <div
+              data-reveal
+              style={`--reveal-delay:${i * 80}ms`}
+              class="flex flex-col gap-4 rounded-2xl border border-white/8 bg-ink-950/50 p-6 transition-colors duration-300 hover:border-brand-400/30"
+            >
+              <span class="flex size-12 items-center justify-center rounded-xl bg-brand-400/12 text-brand-400">
+                <Icon name={razon.icon} class="size-6" />
+              </span>
+              <h3 class="text-xl uppercase">{razon.title}</h3>
+              <p class="text-sm leading-relaxed text-ink-400">{razon.text}</p>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== CÓMO TRABAJAMOS ==================== -->
+  <section class="py-20 lg:py-28">
+    <div class="container-page">
+      <div class="grid gap-12 lg:grid-cols-12 lg:gap-16">
+        <div class="lg:col-span-5">
+          <SectionHeading eyebrow="Cómo trabajamos" title="De la foto al equipo instalado">
+            Tres pasos, sin vueltas. La mayoría de las cotizaciones sale el mismo día.
+          </SectionHeading>
+
+          <div data-reveal class="mt-8">
+            <Button
+              href={waLink('Hola Reyso, tengo una consulta sobre un trabajo.')}
+              icon="whatsapp"
+              external
+            >
+              Empezar por WhatsApp
+            </Button>
+          </div>
+        </div>
+
+        <ol class="flex flex-col gap-4 lg:col-span-7">
+          {
+            pasos.map((paso, i) => (
+              <li
+                data-reveal
+                style={`--reveal-delay:${i * 90}ms`}
+                class="group flex gap-5 rounded-2xl border border-white/8 bg-ink-900/60 p-6 transition-colors duration-300 hover:border-brand-400/30"
+              >
+                <span class="font-display text-4xl leading-none font-bold text-brand-400/35 transition-colors duration-300 group-hover:text-brand-400">
+                  {paso.n}
+                </span>
+                <span>
+                  <h3 class="text-xl uppercase">{paso.title}</h3>
+                  <p class="mt-2 text-sm leading-relaxed text-ink-400">{paso.text}</p>
+                </span>
+              </li>
+            ))
+          }
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <ContactCTA />
 </Layout>

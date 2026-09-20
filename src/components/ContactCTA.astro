@@ -1,0 +1,140 @@
+---
+import Icon from './Icon.astro';
+import { contact, waLink, telLink, mailLink } from '../data/site';
+
+/**
+ * Bloque de contacto reutilizable.
+ *
+ * Antes este mismo bloque, con los tres SVG escritos a mano, estaba copiado
+ * en index, easycarp y torneria. Ahora se escribe una sola vez.
+ */
+interface Props {
+  title?: string;
+  text?: string;
+  /** Mensaje que aparece ya escrito al abrir WhatsApp. */
+  waMessage?: string;
+  class?: string;
+}
+
+const {
+  title = '¿Listo para trabajar con nosotros?',
+  text = 'Cuéntanos qué necesitas y te respondemos con una cotización. La forma más rápida es WhatsApp.',
+  waMessage = 'Hola Reyso, quiero cotizar un trabajo.',
+  class: className = '',
+} = Astro.props;
+
+const channels = [
+  {
+    href: waLink(waMessage),
+    icon: 'whatsapp' as const,
+    label: 'WhatsApp',
+    value: contact.phonePretty,
+    note: 'Respuesta más rápida',
+    external: true,
+    featured: true,
+  },
+  {
+    href: telLink,
+    icon: 'phone' as const,
+    label: 'Teléfono',
+    value: contact.phonePretty,
+    note: 'Llámanos directo',
+    external: false,
+    featured: false,
+  },
+  {
+    href: mailLink,
+    icon: 'mail' as const,
+    label: 'Correo',
+    value: contact.email,
+    note: 'Para planos y detalles',
+    external: false,
+    featured: false,
+  },
+];
+---
+
+<section class:list={['relative overflow-hidden bg-ink-900 py-20 lg:py-28', className]}>
+  <div class="grid-texture absolute inset-0 opacity-60" aria-hidden="true"></div>
+  <div
+    class="absolute -top-32 left-1/2 h-64 w-[36rem] -translate-x-1/2 rounded-full bg-brand-400/10 blur-3xl"
+    aria-hidden="true"
+  >
+  </div>
+
+  <div class="container-page relative">
+    <div data-reveal class="mx-auto max-w-2xl text-center">
+      <span
+        class="inline-flex items-center gap-2.5 text-xs font-bold tracking-[0.18em] text-brand-400 uppercase"
+      >
+        <span class="h-px w-7 bg-brand-400"></span>
+        Contacto
+        <span class="h-px w-7 bg-brand-400"></span>
+      </span>
+      <h2 class="mt-5 text-4xl uppercase sm:text-5xl">{title}</h2>
+      <p class="mt-5 text-lg leading-relaxed text-ink-300">{text}</p>
+    </div>
+
+    <div class="mx-auto mt-12 grid max-w-4xl gap-4 sm:grid-cols-3">
+      {
+        channels.map((channel, i) => (
+          <a
+            href={channel.href}
+            target={channel.external ? '_blank' : undefined}
+            rel={channel.external ? 'noopener' : undefined}
+            data-reveal
+            style={`--reveal-delay:${i * 90}ms`}
+            class:list={[
+              'group flex flex-col items-center gap-3 rounded-2xl border p-6 text-center transition-all duration-300 hover:-translate-y-1',
+              channel.featured
+                ? 'border-brand-400/40 bg-brand-400/10 hover:border-brand-400 hover:bg-brand-400/15'
+                : 'border-white/10 bg-white/[0.03] hover:border-white/25 hover:bg-white/[0.06]',
+            ]}
+          >
+            <span
+              class:list={[
+                'flex size-12 items-center justify-center rounded-xl transition-transform duration-300 group-hover:scale-110',
+                channel.featured ? 'bg-brand-500 text-white' : 'bg-white/8 text-brand-400',
+              ]}
+            >
+              <Icon name={channel.icon} class="size-6" />
+            </span>
+
+            <span class="font-display text-lg tracking-wide text-white uppercase">
+              {channel.label}
+            </span>
+            <span class="text-sm break-all text-ink-200">{channel.value}</span>
+            <span class="text-xs text-ink-500">{channel.note}</span>
+          </a>
+        ))
+      }
+    </div>
+
+    {
+      (contact.hours || contact.addressCity) && (
+        <div
+          data-reveal
+          class="mx-auto mt-10 flex max-w-4xl flex-wrap items-center justify-center gap-x-8 gap-y-3 text-sm text-ink-400"
+        >
+          {contact.hours && (
+            <span class="inline-flex items-center gap-2">
+              <Icon name="clock" class="size-4 text-brand-400" />
+              {contact.hours}
+            </span>
+          )}
+          {contact.addressCity && (
+            <a
+              href={contact.mapsUrl || undefined}
+              target={contact.mapsUrl ? '_blank' : undefined}
+              rel={contact.mapsUrl ? 'noopener' : undefined}
+              class="inline-flex items-center gap-2 transition-colors hover:text-brand-400"
+            >
+              <Icon name="map-pin" class="size-4 text-brand-400" />
+              {[contact.addressStreet, contact.addressCity].filter(Boolean).join(', ')}
+            </a>
+          )}
+        </div>
+      )
+    }
+  </div>
+</section>

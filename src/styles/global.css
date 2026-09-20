@@ -1,1 +1,189 @@
 @import 'tailwindcss';
+
+/* ==========================================================================
+   Sistema de diseño Reyso
+   Colores tomados de la marca: navy #1e293b del logo Easycarp y el rojo del
+   vinilo "CARP" del brazo del camión (#c83a3e en la foto → #db242d limpio).
+   Tailwind 4 es CSS-first: los tokens de @theme generan las utilidades
+   (bg-brand-500, text-ink-300, font-display, etc.). No existe tailwind.config.js.
+
+   Regla de uso del rojo:
+   · brand-400 (#ea575e) para TEXTO y acentos sobre fondo oscuro — 5.3:1 sobre ink-950.
+   · brand-500 (#db242d) para FONDOS de botón, siempre con texto blanco — 4.9:1.
+   · brand-600 (#ba1c24) para el hover de esos botones.
+   ========================================================================== */
+
+@theme {
+  /* Rojo de marca --------------------------------------------------------- */
+  --color-brand-50: #fef0f1;
+  --color-brand-100: #fde2e4;
+  --color-brand-200: #fabdc0;
+  --color-brand-300: #f18389;
+  --color-brand-400: #ea575e; /* acentos y texto sobre oscuro */
+  --color-brand-500: #db242d; /* fondos de botón, tomado del vinilo CARP */
+  --color-brand-600: #ba1c24; /* hover de botón */
+  --color-brand-700: #9d151c;
+  --color-brand-800: #7f151a;
+  --color-brand-900: #661519;
+
+  /* Navy de marca --------------------------------------------------------- */
+  --color-ink-50: #f5f7fa;
+  --color-ink-100: #e9edf4;
+  --color-ink-200: #ccd5e3;
+  --color-ink-300: #a3b0c7;
+  --color-ink-400: #7385a4;
+  --color-ink-500: #55688a;
+  --color-ink-600: #3f4d66;
+  --color-ink-700: #2d3a51;
+  --color-ink-800: #1e293b; /* exacto del logo */
+  --color-ink-900: #16202f;
+  --color-ink-950: #0b1320;
+
+  /* Tipografía ------------------------------------------------------------ */
+  --font-display: 'Barlow Condensed', 'Arial Narrow', 'Helvetica Neue', sans-serif;
+  --font-sans:
+    'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+
+  /* Animaciones ----------------------------------------------------------- */
+  --animate-marquee: marquee 28s linear infinite;
+}
+
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/* ==========================================================================
+   Base
+   ========================================================================== */
+
+@layer base {
+  :root {
+    color-scheme: dark;
+    scroll-padding-top: 6rem;
+  }
+
+  html {
+    background-color: var(--color-ink-950);
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-behavior: smooth;
+    }
+  }
+
+  body {
+    background-color: var(--color-ink-950);
+    color: var(--color-ink-300);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    color: #fff;
+    font-family: var(--font-display);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    line-height: 1.05;
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  ::selection {
+    background-color: var(--color-brand-500);
+    color: #fff;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-brand-400);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+
+  /* Barra de scroll acorde al tema oscuro */
+  * {
+    scrollbar-color: var(--color-ink-700) transparent;
+  }
+}
+
+/* ==========================================================================
+   Utilidades propias
+   ========================================================================== */
+
+@utility container-page {
+  width: 100%;
+  margin-inline: auto;
+  max-width: 80rem;
+  padding-inline: 1.25rem;
+}
+
+@media (min-width: 1024px) {
+  .container-page {
+    padding-inline: 2rem;
+  }
+}
+
+/* Franja diagonal roja y negra, guiño al mundo camionero */
+@utility hazard-stripe {
+  background-image: repeating-linear-gradient(
+    -45deg,
+    var(--color-brand-500) 0 12px,
+    var(--color-ink-950) 12px 24px
+  );
+}
+
+/* Textura de rejilla muy sutil para fondos de sección */
+@utility grid-texture {
+  background-image:
+    linear-gradient(to right, rgb(255 255 255 / 0.035) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(255 255 255 / 0.035) 1px, transparent 1px);
+  background-size: 56px 56px;
+}
+
+/* Líneas de velocidad del logo, usadas como marca de agua decorativa */
+@utility speed-lines {
+  background-image: repeating-linear-gradient(
+    to bottom,
+    currentColor 0 2px,
+    transparent 2px 9px
+  );
+}
+
+/* ==========================================================================
+   Aparición al hacer scroll (se activa desde Layout.astro)
+   ========================================================================== */
+
+@media (prefers-reduced-motion: no-preference) {
+  [data-reveal] {
+    opacity: 0;
+    transform: translateY(18px);
+    transition:
+      opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+      transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+    transition-delay: var(--reveal-delay, 0ms);
+  }
+
+  [data-reveal].is-visible {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Sin JS o con movimiento reducido, todo visible */
+.no-js [data-reveal],
+[data-reveal].is-visible {
+  opacity: 1;
+  transform: none;
+}

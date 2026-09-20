@@ -1,0 +1,17 @@
+---
+import Icon from './Icon.astro';
+import { waLink } from '../data/site';
+
+/** Botón flotante de WhatsApp, presente en todas las páginas. */
+---
+
+<a
+  href={waLink('Hola Reyso, quiero cotizar un trabajo.')}
+  target="_blank"
+  rel="noopener"
+  aria-label="Cotizar por WhatsApp"
+  class="fixed right-4 bottom-4 z-40 flex items-center gap-3 rounded-full bg-[#25D366] p-4 font-bold sm:py-3.5 sm:pr-5 sm:pl-4 text-white shadow-xl shadow-black/40 transition-transform duration-300 hover:scale-105 sm:right-6 sm:bottom-6"
+>
+  <Icon name="whatsapp" class="size-6 shrink-0" stroke={2.2} />
+  <span class="hidden text-sm sm:inline">Cotizar por WhatsApp</span>
+</a>

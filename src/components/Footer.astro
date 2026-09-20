@@ -1,9 +1,165 @@
 ---
-import HeaderButton from '../components/HeaderButton.astro';
+import Logo from './Logo.astro';
+import Icon from './Icon.astro';
+import { site, contact, nav, services, waLink, telLink, mailLink } from '../data/site';
+
+const year = new Date().getFullYear();
+
+const socials = [
+  { href: contact.instagram, icon: 'instagram' as const, label: 'Instagram' },
+  { href: contact.facebook, icon: 'facebook' as const, label: 'Facebook' },
+].filter((s) => s.href);
 ---
 
-<footer class="bg-zinc-900 text-gray-300 py-8 px-6">
-  <div class="text-center text-xs text-gray-500 mt-6">
-    © 2025 Reyso. Todos los derechos reservados.
+<footer class="relative mt-auto border-t border-white/8 bg-ink-900">
+  <div class="hazard-stripe h-1.5" aria-hidden="true"></div>
+
+  <div class="container-page py-14 lg:py-16">
+    <div class="grid gap-10 lg:grid-cols-12 lg:gap-8">
+      <!-- Marca -->
+      <div class="flex flex-col gap-5 lg:col-span-4">
+        <Logo class="text-3xl" />
+        <p class="max-w-xs text-sm leading-relaxed text-ink-400">
+          {site.description}
+        </p>
+
+        {
+          socials.length > 0 && (
+            <div class="flex gap-2">
+              {socials.map((social) => (
+                <a
+                  href={social.href}
+                  target="_blank"
+                  rel="noopener"
+                  aria-label={social.label}
+                  class="flex size-10 items-center justify-center rounded-lg border border-white/10 text-ink-300 transition-colors hover:border-brand-400/50 hover:text-brand-400"
+                >
+                  <Icon name={social.icon} class="size-5" />
+                </a>
+              ))}
+            </div>
+          )
+        }
+      </div>
+
+      <!-- Servicios -->
+      <div class="lg:col-span-3">
+        <h2 class="font-display text-sm tracking-[0.18em] text-white uppercase">Servicios</h2>
+        <ul class="mt-4 flex flex-col gap-2.5">
+          {
+            services.map((service) => (
+              <li>
+                <a
+                  href={service.href}
+                  class="text-sm text-ink-300 transition-colors hover:text-brand-400"
+                >
+                  {service.title}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+
+      <!-- Navegación -->
+      <div class="lg:col-span-2">
+        <h2 class="font-display text-sm tracking-[0.18em] text-white uppercase">Sitio</h2>
+        <ul class="mt-4 flex flex-col gap-2.5">
+          {
+            nav.map((item) => (
+              <li>
+                <a
+                  href={item.href}
+                  class="text-sm text-ink-300 transition-colors hover:text-brand-400"
+                >
+                  {item.label}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+
+      <!-- Contacto -->
+      <div class="lg:col-span-3">
+        <h2 class="font-display text-sm tracking-[0.18em] text-white uppercase">Contacto</h2>
+        <ul class="mt-4 flex flex-col gap-3.5">
+          <li>
+            <a
+              href={waLink('Hola Reyso, quiero cotizar un trabajo.')}
+              target="_blank"
+              rel="noopener"
+              class="group flex items-start gap-3 text-sm text-ink-300 transition-colors hover:text-white"
+            >
+              <Icon name="whatsapp" class="mt-0.5 size-4 shrink-0 text-brand-400" />
+              <span>
+                {contact.phonePretty}
+                <span class="block text-xs text-ink-500">WhatsApp</span>
+              </span>
+            </a>
+          </li>
+          <li>
+            <a
+              href={telLink}
+              class="flex items-start gap-3 text-sm text-ink-300 transition-colors hover:text-white"
+            >
+              <Icon name="phone" class="mt-0.5 size-4 shrink-0 text-brand-400" />
+              <span>
+                {contact.phonePretty}
+                <span class="block text-xs text-ink-500">Llamada</span>
+              </span>
+            </a>
+          </li>
+          <li>
+            <a
+              href={mailLink}
+              class="flex items-start gap-3 text-sm break-all text-ink-300 transition-colors hover:text-white"
+            >
+              <Icon name="mail" class="mt-0.5 size-4 shrink-0 text-brand-400" />
+              {contact.email}
+            </a>
+          </li>
+
+          {
+            contact.hours && (
+              <li class="flex items-start gap-3 text-sm text-ink-300">
+                <Icon name="clock" class="mt-0.5 size-4 shrink-0 text-brand-400" />
+                {contact.hours}
+              </li>
+            )
+          }
+
+          {
+            (contact.addressStreet || contact.addressCity) && (
+              <li>
+                <a
+                  href={contact.mapsUrl || undefined}
+                  target={contact.mapsUrl ? '_blank' : undefined}
+                  rel={contact.mapsUrl ? 'noopener' : undefined}
+                  class="flex items-start gap-3 text-sm text-ink-300 transition-colors hover:text-white"
+                >
+                  <Icon name="map-pin" class="mt-0.5 size-4 shrink-0 text-brand-400" />
+                  <span>
+                    {contact.addressStreet}
+                    {contact.addressCity && (
+                      <span class="block text-xs text-ink-500">
+                        {[contact.addressCity, contact.addressRegion].filter(Boolean).join(', ')}
+                      </span>
+                    )}
+                  </span>
+                </a>
+              </li>
+            )
+          }
+        </ul>
+      </div>
+    </div>
+
+    <div
+      class="mt-12 flex flex-col items-center justify-between gap-3 border-t border-white/8 pt-6 text-xs text-ink-400 sm:flex-row"
+    >
+      <p>© {year} {site.name}. Todos los derechos reservados.</p>
+      <p class="text-ink-500">Encarpe · Tornería</p>
+    </div>
   </div>
 </footer>

@@ -1,0 +1,295 @@
+---
+import Layout from '../layouts/Layout.astro';
+import PageHero from '../components/PageHero.astro';
+import Icon from '../components/Icon.astro';
+import { contact, waLink, telLink, mailLink, services } from '../data/site';
+
+const canales = [
+  {
+    href: waLink('Hola Reyso, quiero cotizar un trabajo.'),
+    icon: 'whatsapp' as const,
+    label: 'WhatsApp',
+    value: contact.phonePretty,
+    note: 'Lo más rápido, y puedes mandar fotos',
+    external: true,
+  },
+  {
+    href: telLink,
+    icon: 'phone' as const,
+    label: 'Teléfono',
+    value: contact.phonePretty,
+    note: 'Si prefieres hablarlo directo',
+    external: false,
+  },
+  {
+    href: mailLink,
+    icon: 'mail' as const,
+    label: 'Correo',
+    value: contact.email,
+    note: 'Para planos, documentos o cotizaciones formales',
+    external: false,
+  },
+];
+---
+
+<Layout
+  title="Contacto"
+  description="Contacta a Reyso por WhatsApp, teléfono o correo. Cotizamos encarpe Easycarp y trabajos de tornería a medida."
+>
+  <PageHero eyebrow="Hablemos" title="Contacto" crumb="Contacto">
+    Cuéntanos qué necesitas. Completa el formulario y se abre WhatsApp con el mensaje ya escrito, o
+    escríbenos directo por el canal que prefieras.
+  </PageHero>
+
+  <section class="py-16 lg:py-24">
+    <div class="container-page">
+      <div class="grid gap-10 lg:grid-cols-12 lg:gap-14">
+        <!-- ==================== FORMULARIO ==================== -->
+        <div class="lg:col-span-7">
+          <div
+            data-reveal
+            class="rounded-3xl border border-white/10 bg-ink-900 p-6 shadow-2xl shadow-black/40 sm:p-8"
+          >
+            <h2 class="text-3xl uppercase">Arma tu consulta</h2>
+            <p class="mt-3 text-sm leading-relaxed text-ink-400">
+              No guardamos nada: el formulario solo prepara el mensaje y lo abre en tu WhatsApp para
+              que lo revises antes de enviarlo.
+            </p>
+
+            <form id="form-contacto" class="mt-8 flex flex-col gap-5" novalidate>
+              <div class="flex flex-col gap-2">
+                <label for="nombre" class="text-sm font-semibold text-ink-200">
+                  Tu nombre <span class="text-brand-400">*</span>
+                </label>
+                <input
+                  id="nombre"
+                  name="nombre"
+                  type="text"
+                  required
+                  autocomplete="name"
+                  placeholder="Juan Pérez"
+                  class="rounded-xl border border-white/10 bg-ink-950 px-4 py-3 text-white placeholder:text-ink-600 focus:border-brand-400 focus:outline-none"
+                />
+              </div>
+
+              <div class="flex flex-col gap-2">
+                <label for="servicio" class="text-sm font-semibold text-ink-200">
+                  ¿Qué necesitas?
+                </label>
+                <select
+                  id="servicio"
+                  name="servicio"
+                  class="rounded-xl border border-white/10 bg-ink-950 px-4 py-3 text-white focus:border-brand-400 focus:outline-none"
+                >
+                  {services.map((service) => <option value={service.title}>{service.title}</option>)}
+                  <option value="Otro">Otro / no estoy seguro</option>
+                </select>
+              </div>
+
+              <div class="flex flex-col gap-2">
+                <label for="equipo" class="text-sm font-semibold text-ink-200">
+                  Equipo o camión <span class="font-normal text-ink-500">(opcional)</span>
+                </label>
+                <input
+                  id="equipo"
+                  name="equipo"
+                  type="text"
+                  placeholder="Ej: tolva bidireccional, batea de 3 ejes, torno…"
+                  class="rounded-xl border border-white/10 bg-ink-950 px-4 py-3 text-white placeholder:text-ink-600 focus:border-brand-400 focus:outline-none"
+                />
+              </div>
+
+              <div class="flex flex-col gap-2">
+                <label for="mensaje" class="text-sm font-semibold text-ink-200">
+                  Cuéntanos más <span class="text-brand-400">*</span>
+                </label>
+                <textarea
+                  id="mensaje"
+                  name="mensaje"
+                  rows="5"
+                  required
+                  placeholder="Qué trabajo necesitas, para cuándo, y cualquier detalle que sirva."
+                  class="resize-y rounded-xl border border-white/10 bg-ink-950 px-4 py-3 text-white placeholder:text-ink-600 focus:border-brand-400 focus:outline-none"
+                ></textarea>
+              </div>
+
+              <p id="form-error" class="hidden text-sm font-semibold text-brand-300" role="alert">
+                Completa tu nombre y el mensaje para continuar.
+              </p>
+
+              <div class="flex flex-col gap-3 pt-1 sm:flex-row">
+                <button
+                  type="submit"
+                  class="group inline-flex flex-1 items-center justify-center gap-2.5 rounded-xl bg-brand-500 px-6 py-4 font-bold text-white transition-all duration-200 hover:bg-brand-600 hover:shadow-lg hover:shadow-brand-500/30 active:scale-[.98]"
+                >
+                  <Icon name="whatsapp" class="size-5" />
+                  Abrir en WhatsApp
+                </button>
+
+                <button
+                  type="button"
+                  id="btn-correo"
+                  class="inline-flex items-center justify-center gap-2.5 rounded-xl border border-white/15 bg-white/5 px-6 py-4 font-semibold text-white transition-colors hover:border-white/30 hover:bg-white/10"
+                >
+                  <Icon name="mail" class="size-5 text-brand-400" />
+                  Enviar por correo
+                </button>
+              </div>
+
+              <p class="text-xs leading-relaxed text-ink-500">
+                Si tienes fotos del equipo o de la pieza, mándalas por WhatsApp: con una foto
+                cotizamos mucho más rápido.
+              </p>
+            </form>
+          </div>
+        </div>
+
+        <!-- ==================== CANALES ==================== -->
+        <div class="flex flex-col gap-4 lg:col-span-5">
+          {
+            canales.map((canal, i) => (
+              <a
+                href={canal.href}
+                target={canal.external ? '_blank' : undefined}
+                rel={canal.external ? 'noopener' : undefined}
+                data-reveal
+                style={`--reveal-delay:${i * 80}ms`}
+                class="group flex items-start gap-4 rounded-2xl border border-white/10 bg-ink-900/60 p-6 transition-all duration-300 hover:-translate-y-0.5 hover:border-brand-400/40"
+              >
+                <span class="flex size-12 shrink-0 items-center justify-center rounded-xl bg-brand-400/12 text-brand-400 transition-transform duration-300 group-hover:scale-110">
+                  <Icon name={canal.icon} class="size-6" />
+                </span>
+                <span class="min-w-0">
+                  <span class="block font-display text-lg tracking-wide text-white uppercase">
+                    {canal.label}
+                  </span>
+                  <span class="mt-0.5 block text-sm break-words text-ink-200">{canal.value}</span>
+                  <span class="mt-1 block text-xs text-ink-500">{canal.note}</span>
+                </span>
+                <Icon
+                  name="arrow-up-right"
+                  class="ml-auto size-5 shrink-0 text-ink-600 transition-colors group-hover:text-brand-400"
+                />
+              </a>
+            ))
+          }
+
+          {
+            (contact.hours || contact.addressStreet || contact.addressCity) && (
+              <div
+                data-reveal
+                class="flex flex-col gap-4 rounded-2xl border border-white/10 bg-ink-900/60 p-6"
+              >
+                {contact.hours && (
+                  <div class="flex items-start gap-4">
+                    <Icon name="clock" class="mt-0.5 size-5 shrink-0 text-brand-400" />
+                    <div>
+                      <p class="font-display text-sm tracking-[0.18em] text-white uppercase">
+                        Horario
+                      </p>
+                      <p class="mt-1 text-sm text-ink-300">{contact.hours}</p>
+                    </div>
+                  </div>
+                )}
+
+                {(contact.addressStreet || contact.addressCity) && (
+                  <div class="flex items-start gap-4">
+                    <Icon name="map-pin" class="mt-0.5 size-5 shrink-0 text-brand-400" />
+                    <div>
+                      <p class="font-display text-sm tracking-[0.18em] text-white uppercase">
+                        Taller
+                      </p>
+                      <p class="mt-1 text-sm text-ink-300">
+                        {[contact.addressStreet, contact.addressCity, contact.addressRegion]
+                          .filter(Boolean)
+                          .join(', ')}
+                      </p>
+                      {contact.mapsUrl && (
+                        <a
+                          href={contact.mapsUrl}
+                          target="_blank"
+                          rel="noopener"
+                          class="mt-2 inline-flex items-center gap-1.5 text-sm font-semibold text-brand-400 hover:underline"
+                        >
+                          Ver en el mapa
+                          <Icon name="arrow-up-right" class="size-4" />
+                        </a>
+                      )}
+                    </div>
+                  </div>
+                )}
+              </div>
+            )
+          }
+
+          <div
+            data-reveal
+            class="rounded-2xl border border-brand-400/25 bg-brand-400/8 p-6 text-sm leading-relaxed text-ink-200"
+          >
+            <p class="font-display text-lg tracking-wide text-white uppercase">Antes de escribir</p>
+            <p class="mt-2">
+              Ten a mano una foto del equipo o de la pieza y, si es tornería, alguna medida de
+              referencia. Con eso la cotización sale el mismo día.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script is:inline define:vars={{ phoneRaw: contact.phoneRaw, email: contact.email }}>
+    (() => {
+      const form = document.getElementById('form-contacto');
+      if (!form) return;
+
+      const error = document.getElementById('form-error');
+      const mailBtn = document.getElementById('btn-correo');
+
+      const read = () => {
+        const data = new FormData(form);
+        const nombre = String(data.get('nombre') ?? '').trim();
+        const servicio = String(data.get('servicio') ?? '').trim();
+        const equipo = String(data.get('equipo') ?? '').trim();
+        const mensaje = String(data.get('mensaje') ?? '').trim();
+
+        if (!nombre || !mensaje) {
+          error?.classList.remove('hidden');
+          (nombre ? form.querySelector('#mensaje') : form.querySelector('#nombre'))?.focus();
+          return null;
+        }
+
+        error?.classList.add('hidden');
+
+        const lines = [
+          `Hola Reyso, soy ${nombre}.`,
+          servicio ? `Servicio: ${servicio}.` : '',
+          equipo ? `Equipo: ${equipo}.` : '',
+          '',
+          mensaje,
+        ].filter((line) => line !== '');
+
+        return { texto: lines.join('\n'), servicio, nombre };
+      };
+
+      form.addEventListener('submit', (event) => {
+        event.preventDefault();
+        const result = read();
+        if (!result) return;
+        window.open(
+          `https://wa.me/${phoneRaw}?text=${encodeURIComponent(result.texto)}`,
+          '_blank',
+          'noopener'
+        );
+      });
+
+      mailBtn?.addEventListener('click', () => {
+        const result = read();
+        if (!result) return;
+        const asunto = `Consulta ${result.servicio || 'web'} — ${result.nombre}`;
+        window.location.href = `mailto:${email}?subject=${encodeURIComponent(
+          asunto
+        )}&body=${encodeURIComponent(result.texto)}`;
+      });
+    })();
+  </script>
+</Layout>

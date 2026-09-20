@@ -57,6 +57,17 @@ export default [
     },
   },
 
+  // Excepción puntual: el Layout usa set:html para inyectar los datos
+  // estructurados JSON-LD. El contenido lo generamos nosotros con
+  // JSON.stringify a partir de src/data/site.ts, nunca viene del usuario,
+  // así que no hay riesgo de inyección.
+  {
+    files: ['src/layouts/Layout.astro'],
+    rules: {
+      'astro/no-set-html-directive': 'off',
+    },
+  },
+
   // Prettier config (should be last to override other formatting rules)
   prettierConfig,
 ];

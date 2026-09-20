@@ -2,32 +2,137 @@
 import '../styles/global.css';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import WhatsAppFab from '../components/WhatsAppFab.astro';
+import { site, contact } from '../data/site';
+
+interface Props {
+  /** Título de la pestaña. Se le agrega el nombre de la marca. */
+  title: string;
+  /** Meta description de la página. */
+  description?: string;
+  /** Imagen para compartir en WhatsApp o redes, ruta absoluta desde la raíz. */
+  ogImage?: string;
+  /** Marca la página como no indexable (por ejemplo, el 404). */
+  noindex?: boolean;
+}
+
+const { title, description = site.description, ogImage = '/og.jpg', noindex = false } = Astro.props;
+
+const canonical = new URL(Astro.url.pathname, site.url).href.replace(/(.+)\/$/, '$1');
+const ogImageUrl = new URL(ogImage, site.url).href;
+const fullTitle = title === site.name ? `${site.name} — ${site.tagline}` : `${title} | ${site.name}`;
+
+/* Datos estructurados para Google. Los campos vacíos no se envían. */
+const structuredData: Record<string, unknown> = {
+  '@context': 'https://schema.org',
+  '@type': 'LocalBusiness',
+  name: site.name,
+  description: site.description,
+  url: site.url,
+  image: ogImageUrl,
+  telephone: `+${contact.phoneRaw}`,
+  email: contact.email,
+  priceRange: '$$',
+  areaServed: 'Región Metropolitana, Chile',
+};
+
+if (contact.addressStreet || contact.addressCity) {
+  structuredData.address = {
+    '@type': 'PostalAddress',
+    streetAddress: contact.addressStreet || undefined,
+    addressLocality: contact.addressCity || undefined,
+    addressRegion: contact.addressRegion || undefined,
+    addressCountry: 'CL',
+  };
+}
+
+const socials = [contact.instagram, contact.facebook].filter(Boolean);
+if (socials.length) structuredData.sameAs = socials;
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="es" class="no-js">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="generator" content={Astro.generator} />
-    <title>Reyso</title>
+    <meta name="theme-color" content="#0b1320" />
+
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    {noindex && <meta name="robots" content="noindex, follow" />}
+
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/favicon.svg" />
+
+    <!-- Open Graph / WhatsApp -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={site.name} />
+    <meta property="og:locale" content={site.locale} />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImageUrl} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={fullTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImageUrl} />
+
+    <!-- Tipografías -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,600;0,700;1,700;1,800&family=Inter:wght@400;500;600;700&display=swap"
+    />
+
+    <script is:inline>
+      document.documentElement.classList.remove('no-js');
+    </script>
+
+    <script type="application/ld+json" set:html={JSON.stringify(structuredData)}></script>
   </head>
-  <body class="bg-gray-900 min-h-screen pb-32">
+
+  <body class="flex min-h-screen flex-col font-sans">
+    <a
+      href="#contenido"
+      class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:rounded-lg focus:bg-brand-500 focus:px-4 focus:py-2 focus:font-semibold focus:text-white"
+    >
+      Saltar al contenido
+    </a>
+
     <Header />
-    <main class="max-w-5xl px-4 m-auto">
+
+    <main id="contenido" class="flex-1">
       <slot />
     </main>
+
     <Footer />
+    <WhatsAppFab />
+
+    <script>
+      // Aparición progresiva de las secciones al hacer scroll.
+      const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const targets = document.querySelectorAll<HTMLElement>('[data-reveal]');
+
+      if (reduced || !('IntersectionObserver' in window)) {
+        targets.forEach((el) => el.classList.add('is-visible'));
+      } else {
+        const observer = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (!entry.isIntersecting) return;
+              entry.target.classList.add('is-visible');
+              observer.unobserve(entry.target);
+            });
+          },
+          { rootMargin: '0px 0px -12% 0px', threshold: 0.05 }
+        );
+        targets.forEach((el) => observer.observe(el));
+      }
+    </script>
   </body>
 </html>
-
-<style>
-  html {
-    background: rgb(14, 18, 39);
-    margin: 0;
-    width: 100%;
-    height: 100%;
-    color-scheme: dark ligth;
-  }
-</style>

@@ -1,0 +1,32 @@
+---
+import Icon from './Icon.astro';
+
+interface Props {
+  items: readonly { q: string; a: string }[];
+  class?: string;
+}
+
+const { items, class: className = '' } = Astro.props;
+---
+
+<div class:list={['flex flex-col gap-3', className]}>
+  {
+    items.map((item, i) => (
+      <details
+        data-reveal
+        style={`--reveal-delay:${i * 70}ms`}
+        name="faq"
+        class="group rounded-2xl border border-white/8 bg-ink-900/60 transition-colors duration-300 open:border-brand-400/30 hover:border-white/20"
+      >
+        <summary class="flex cursor-pointer list-none items-center justify-between gap-4 p-5 text-left font-display text-lg tracking-wide text-white uppercase [&::-webkit-details-marker]:hidden">
+          {item.q}
+          <Icon
+            name="chevron-down"
+            class="size-5 shrink-0 text-brand-400 transition-transform duration-300 group-open:rotate-180"
+          />
+        </summary>
+        <p class="px-5 pb-5 text-sm leading-relaxed text-ink-300">{item.a}</p>
+      </details>
+    ))
+  }
+</div>

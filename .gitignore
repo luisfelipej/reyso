@@ -22,3 +22,9 @@ pnpm-debug.log*
 
 # jetbrains setting folder
 .idea/
+
+# carpeta temporal con archivos reemplazados por el rediseño
+_eliminar/
+
+# el proyecto usa pnpm, no npm
+package-lock.json

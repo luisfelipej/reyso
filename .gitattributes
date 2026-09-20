@@ -1,0 +1,14 @@
+# Normaliza los finales de línea.
+# Sin esto, en Windows git marca el repo entero como modificado (CRLF vs LF).
+* text=auto eol=lf
+
+# Binarios: que git no los toque.
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.webp binary
+*.avif binary
+*.mp4 binary
+*.ico binary
+*.woff binary
+*.woff2 binary

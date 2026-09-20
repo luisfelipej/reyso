@@ -1,0 +1,38 @@
+---
+/**
+ * Iconos SVG en línea. Los trazados viven en `src/data/icons.ts`.
+ *
+ * Centralizarlos evita los bloques de SVG repetidos por todo el sitio:
+ * antes el mismo icono de WhatsApp estaba copiado en cuatro páginas.
+ */
+import { iconPaths, filledIconPaths, type IconName } from '../data/icons';
+
+interface Props {
+  name: IconName;
+  class?: string;
+  /** Grosor del trazo. */
+  stroke?: number;
+}
+
+const { name, class: className = 'size-5', stroke = 2 } = Astro.props;
+
+const isFilled = name in filledIconPaths;
+const segments: readonly string[] = isFilled
+  ? filledIconPaths[name as keyof typeof filledIconPaths]
+  : iconPaths[name as keyof typeof iconPaths];
+---
+
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 24 24"
+  class={className}
+  fill={isFilled ? 'currentColor' : 'none'}
+  stroke={isFilled ? 'none' : 'currentColor'}
+  stroke-width={isFilled ? undefined : stroke}
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  aria-hidden="true"
+  focusable="false"
+>
+  {segments.map((segment) => <path d={segment} />)}
+</svg>

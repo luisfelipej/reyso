@@ -1,0 +1,249 @@
+---
+import { Image, getImage } from 'astro:assets';
+import Icon from './Icon.astro';
+import type { MediaItem } from '../data/galleries';
+
+/**
+ * Galería única para las tres secciones.
+ *
+ * Reemplaza a Galeria.astro, GaleriaRep.astro y GaleriaTorno.astro, que eran
+ * el mismo componente copiado tres veces. Soporta imágenes y video, y abre
+ * cada pieza en un visor a pantalla completa con teclado.
+ */
+interface Props {
+  items: readonly MediaItem[];
+  class?: string;
+}
+
+const { items, class: className = '' } = Astro.props;
+const uid = `gal-${Math.random().toString(36).slice(2, 8)}`;
+
+/* Versión grande de cada pieza para el visor, generada en tiempo de build. */
+const prepared = await Promise.all(
+  items.map(async (item) => {
+    if (item.type === 'video') {
+      const poster = item.poster
+        ? await getImage({ src: item.poster, width: 1200, format: 'webp' })
+        : null;
+      return { kind: 'video' as const, full: item.src, poster: poster?.src ?? '' };
+    }
+    const full = await getImage({ src: item.src, width: 1600, format: 'webp' });
+    return { kind: 'image' as const, full: full.src, poster: '' };
+  })
+);
+---
+
+<div class:list={['grid gap-5 sm:grid-cols-2 lg:grid-cols-3', className]} data-gallery={uid}>
+  {
+    items.map((item, i) => (
+      <figure
+        data-reveal
+        style={`--reveal-delay:${(i % 3) * 80}ms`}
+        class="group relative overflow-hidden rounded-2xl border border-white/8 bg-ink-900 transition-all duration-300 hover:border-brand-400/40 hover:shadow-2xl hover:shadow-black/50"
+      >
+        <button
+          type="button"
+          class="block w-full cursor-zoom-in text-left"
+          data-open={i}
+          data-kind={prepared[i]?.kind}
+          data-full={prepared[i]?.full}
+          data-poster={prepared[i]?.poster}
+          data-title={item.title}
+          data-desc={item.desc ?? ''}
+        >
+          <span class="sr-only">Ampliar: {item.title}</span>
+
+          <span class="relative block aspect-[4/5] overflow-hidden">
+            {item.type === 'image' ? (
+              <Image
+                src={item.src}
+                alt={item.alt ?? item.title}
+                widths={[320, 480, 700]}
+                sizes="(min-width: 1024px) 30vw, (min-width: 640px) 45vw, 90vw"
+                class="size-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.06]"
+              />
+            ) : item.poster ? (
+              <Image
+                src={item.poster}
+                alt={item.title}
+                widths={[320, 480, 700]}
+                sizes="(min-width: 1024px) 30vw, (min-width: 640px) 45vw, 90vw"
+                class="size-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.06]"
+              />
+            ) : (
+              <span class="block size-full bg-ink-800" />
+            )}
+
+            <span class="absolute inset-0 bg-gradient-to-t from-ink-950/85 via-transparent to-transparent" />
+
+            {item.type === 'video' && (
+              <span class="absolute inset-0 flex items-center justify-center">
+                <span class="flex size-16 items-center justify-center rounded-full bg-brand-400/95 text-ink-950 shadow-xl transition-transform duration-300 group-hover:scale-110">
+                  <Icon name="play" class="ml-1 size-7" />
+                </span>
+              </span>
+            )}
+
+            <span class="absolute top-3 right-3 flex size-9 items-center justify-center rounded-lg bg-ink-950/70 text-white opacity-0 backdrop-blur-sm transition-opacity duration-300 group-hover:opacity-100">
+              <Icon name="maximize" class="size-4" />
+            </span>
+          </span>
+        </button>
+
+        <figcaption class="p-5">
+          <h3 class="text-lg font-semibold text-white">{item.title}</h3>
+          {item.desc && <p class="mt-1 text-sm leading-relaxed text-ink-400">{item.desc}</p>}
+        </figcaption>
+      </figure>
+    ))
+  }
+</div>
+
+<!-- Visor a pantalla completa -->
+<dialog
+  data-lightbox={uid}
+  class="m-0 max-h-none max-w-none bg-transparent p-0 backdrop:bg-ink-950/92 backdrop:backdrop-blur-sm"
+>
+  <div class="fixed inset-0 flex flex-col">
+    <div class="flex items-center justify-between px-4 py-3 sm:px-6">
+      <span data-counter class="font-display text-sm tracking-widest text-ink-400 uppercase"></span>
+      <button
+        type="button"
+        data-close
+        class="flex size-11 items-center justify-center rounded-xl border border-white/10 text-white transition-colors hover:bg-white/10"
+      >
+        <span class="sr-only">Cerrar</span>
+        <Icon name="x" class="size-5" />
+      </button>
+    </div>
+
+    <div class="relative flex min-h-0 flex-1 items-center justify-center px-4 pb-4 sm:px-16">
+      <button
+        type="button"
+        data-prev
+        class="absolute left-1 z-10 flex size-11 items-center justify-center rounded-xl border border-white/10 bg-ink-900/70 text-white backdrop-blur-sm transition-colors hover:bg-white/10 sm:left-4"
+      >
+        <span class="sr-only">Anterior</span>
+        <Icon name="chevron-left" class="size-5" />
+      </button>
+
+      <figure class="flex max-h-full min-h-0 flex-col items-center gap-4">
+        <img data-viewer-img alt="" class="max-h-[72vh] w-auto rounded-xl object-contain" hidden />
+        <video
+          data-viewer-video
+          controls
+          playsinline
+          class="max-h-[72vh] w-auto rounded-xl bg-black"
+          hidden></video>
+
+        <figcaption class="max-w-xl px-2 text-center">
+          <p data-viewer-title class="font-display text-xl tracking-wide text-white uppercase"></p>
+          <p data-viewer-desc class="mt-1 text-sm text-ink-400"></p>
+        </figcaption>
+      </figure>
+
+      <button
+        type="button"
+        data-next
+        class="absolute right-1 z-10 flex size-11 items-center justify-center rounded-xl border border-white/10 bg-ink-900/70 text-white backdrop-blur-sm transition-colors hover:bg-white/10 sm:right-4"
+      >
+        <span class="sr-only">Siguiente</span>
+        <Icon name="chevron-right" class="size-5" />
+      </button>
+    </div>
+  </div>
+</dialog>
+
+<script>
+  type Slide = {
+    kind: string;
+    full: string;
+    poster: string;
+    title: string;
+    desc: string;
+  };
+
+  document.querySelectorAll<HTMLElement>('[data-gallery]').forEach((grid) => {
+    const uid = grid.dataset.gallery;
+    const dialog = document.querySelector<HTMLDialogElement>(`[data-lightbox="${uid}"]`);
+    if (!dialog) return;
+
+    const triggers = Array.from(grid.querySelectorAll<HTMLButtonElement>('[data-open]'));
+    const slides: Slide[] = triggers.map((el) => ({
+      kind: el.dataset.kind ?? 'image',
+      full: el.dataset.full ?? '',
+      poster: el.dataset.poster ?? '',
+      title: el.dataset.title ?? '',
+      desc: el.dataset.desc ?? '',
+    }));
+
+    const img = dialog.querySelector<HTMLImageElement>('[data-viewer-img]');
+    const video = dialog.querySelector<HTMLVideoElement>('[data-viewer-video]');
+    const title = dialog.querySelector<HTMLElement>('[data-viewer-title]');
+    const desc = dialog.querySelector<HTMLElement>('[data-viewer-desc]');
+    const counter = dialog.querySelector<HTMLElement>('[data-counter]');
+
+    let current = 0;
+
+    const render = (index: number) => {
+      current = (index + slides.length) % slides.length;
+      const slide = slides[current];
+      if (!slide || !img || !video) return;
+
+      video.pause();
+
+      if (slide.kind === 'video') {
+        img.hidden = true;
+        img.removeAttribute('src');
+        video.hidden = false;
+        video.src = slide.full;
+        if (slide.poster) video.poster = slide.poster;
+      } else {
+        video.hidden = true;
+        video.removeAttribute('src');
+        img.hidden = false;
+        img.src = slide.full;
+        img.alt = slide.title;
+      }
+
+      if (title) title.textContent = slide.title;
+      if (desc) desc.textContent = slide.desc;
+      if (counter) counter.textContent = `${current + 1} / ${slides.length}`;
+    };
+
+    const close = () => {
+      video?.pause();
+      dialog.close();
+    };
+
+    triggers.forEach((trigger, index) => {
+      trigger.addEventListener('click', () => {
+        render(index);
+        dialog.showModal();
+      });
+    });
+
+    dialog.querySelector('[data-close]')?.addEventListener('click', close);
+    dialog.querySelector('[data-prev]')?.addEventListener('click', () => render(current - 1));
+    dialog.querySelector('[data-next]')?.addEventListener('click', () => render(current + 1));
+
+    // Clic en el fondo cierra el visor
+    dialog.addEventListener('click', (event) => {
+      const target = event.target as HTMLElement;
+      if (target === dialog || target.closest('figure, button') === null) close();
+    });
+
+    dialog.addEventListener('close', () => video?.pause());
+
+    dialog.addEventListener('keydown', (event) => {
+      if (event.key === 'ArrowLeft') {
+        event.preventDefault();
+        render(current - 1);
+      }
+      if (event.key === 'ArrowRight') {
+        event.preventDefault();
+        render(current + 1);
+      }
+    });
+  });
+</script>

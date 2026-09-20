@@ -1,0 +1,47 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Button from '../components/Button.astro';
+import Icon from '../components/Icon.astro';
+import { services } from '../data/site';
+---
+
+<Layout title="Página no encontrada" noindex>
+  <section class="relative overflow-hidden">
+    <div class="grid-texture absolute inset-0 opacity-60" aria-hidden="true"></div>
+
+    <div class="container-page relative flex flex-col items-center py-24 text-center lg:py-32">
+      <span
+        class="font-display text-[7rem] leading-none font-bold text-brand-400/25 sm:text-[10rem]"
+      >
+        404
+      </span>
+
+      <h1 class="mt-2 text-4xl uppercase sm:text-5xl">Esta página no existe</h1>
+
+      <p class="mt-5 max-w-md text-lg leading-relaxed text-ink-300">
+        Puede que el enlace esté roto o que la página haya cambiado de dirección. Desde acá puedes
+        volver al inicio.
+      </p>
+
+      <div class="mt-9">
+        <Button href="/" size="lg" icon="arrow-right" iconRight>Volver al inicio</Button>
+      </div>
+
+      <ul class="mt-14 flex flex-wrap justify-center gap-3">
+        {
+          services.map((service) => (
+            <li>
+              <a
+                href={service.href}
+                class="inline-flex items-center gap-2 rounded-xl border border-white/10 px-4 py-2.5 text-sm font-semibold text-ink-200 transition-colors hover:border-brand-400/40 hover:text-white"
+              >
+                {service.title}
+                <Icon name="arrow-up-right" class="size-4 text-brand-400" />
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+</Layout>
