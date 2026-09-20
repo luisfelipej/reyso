@@ -129,7 +129,10 @@ if (socials.length) structuredData.sameAs = socials;
               observer.unobserve(entry.target);
             });
           },
-          { rootMargin: '0px 0px -12% 0px', threshold: 0.05 }
+          // El margen superior enorme hace que todo lo que ya pasó por pantalla
+          // siga contando como visible. Así un scroll rápido nunca deja una
+          // sección invisible para siempre. threshold 0 = basta un píxel.
+          { rootMargin: '9999px 0px -8% 0px', threshold: 0 }
         );
         targets.forEach((el) => observer.observe(el));
       }
